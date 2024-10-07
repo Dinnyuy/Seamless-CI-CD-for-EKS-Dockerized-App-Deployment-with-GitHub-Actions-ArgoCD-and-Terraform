@@ -1,41 +1,29 @@
-name: Terraform Plan and Output ECR URL
+name: Terraform Apply Workflow
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - main  # Triggers on push to the main branch (you can change this if needed)
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3
+      # Step 1: Checkout the latest version of the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.5.0  # Adjust the version as needed
+      # Step 2: Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
 
-    - name: Initialize Terraform
-      run: terraform init
+      # Step 3: Navigate to the correct directory (starter-project/infrastructure/terraform-manifest)
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: starter-project/infrastructure/terraform-manifest
 
-    - name: Terraform Plan
-      id: plan
-      run: terraform plan -out=plan.out
-
-    - name: Show Planned State
-      run: terraform show plan.out
-
-    # Optional: If you have outputs configured in Terraform (e.g., ECR URL), you can retrieve it with terraform output
-    - name: Extract ECR URL
-      run: terraform output ecr_url
-
-    # Example of how you might store the output into a GitHub Action output or secret
-    - name: Save ECR URL as GitHub Secret (Optional Step)
-      run: echo "ECR_URL=$(terraform output -raw ecr_url)" >> $GITHUB_ENV
-
+      # Step 4: Apply Terraform configuration with auto-approve
+      - name: Apply Terraform
+        run: terraform apply -auto-approve
+        working-directory: starter-project/infrastructure/terraform-manifest
