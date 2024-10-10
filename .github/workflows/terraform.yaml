@@ -27,9 +27,9 @@ jobs:
         uses: hashicorp/setup-terraform@v2
 
       # Step 4: Initialize Terraform in the correct directory
-     # - name: Initialize Terraform
-      #  run: terraform init
-       # working-directory: starter-project/infrastructure/terraform-manifest
+      - name: Initialize Terraform
+        run: terraform init
+        working-directory: starter-project/infrastructure/terraform-manifest
 
       # Step 5: Apply Terraform configuration with auto-approve
      # - name: Apply Terraform
